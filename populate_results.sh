@@ -11,7 +11,7 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c """
 		       link.expectation AS probability
 	    FROM el_candidate_link_is_correct_inference AS link,
 	         canonical_entity AS e,
-	         mention AS m,
+	         entity_mention AS m,
 	         el_kbp_eval_query AS eval_query
 	    WHERE link.entity_id = e.id AND
 	          link.mention_id = m.id AND

@@ -39,7 +39,7 @@ if [ -d "$AUX_TABLES_DIR" ]; then
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
   done
 else
-  unzip $AUX_TABLES
+  unzip $AUX_TABLES -d $AUX_TABLES_DIR
   for file in `find $AUX_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
@@ -70,7 +70,7 @@ if [ -d "$ENTITY_TABLES_DIR" ]; then
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
   done
 else
-  unzip $ENTITY_TABLES
+  unzip $ENTITY_TABLES $ENTITY_TABLES_DIR
   for file in `find $ENTITY_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
@@ -84,7 +84,7 @@ if [ -d "$ENTITY_TABLES_WIKI_DIR" ]; then
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
   done
 else
-  unzip $ENTITY_TABLES_WIKI
+  unzip $ENTITY_TABLES_WIKI $ENTITY_TABLES_WIKI_DIR
   for file in `find $ENTITY_TABLES_WIKI_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi

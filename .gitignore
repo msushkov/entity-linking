@@ -1,0 +1,6 @@
+.DS_Store                                                                                                                                                *.pyc
+*.class
+*.sublime-project
+*.sublime-workspace
+target/*
+.sql

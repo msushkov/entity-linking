@@ -19,7 +19,6 @@ export DBNAME="deepdive_kbp"
 export PGUSER=${PGUSER:-`whoami`}
 export PGPASSWORD=${PGPASSWORD:-}
 
-
 # Data files
 export EL_RESULTS_FILE=$APP_HOME/evaluation/results/out.tsv
 export EL_KBP_EVAL_QUERY=$APP_HOME/data/kbp-competition/el_2010_eval_queries.tsv

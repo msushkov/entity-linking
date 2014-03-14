@@ -10,8 +10,8 @@ if [ "$DBNAME" == "" ]; then
   exit 1
 fi
 
-#dropdb $DBNAME
-#createdb $DBNAME
+dropdb $DBNAME
+createdb $DBNAME
 if [ "$?" != "0" ]; then echo "[10] FAILED!"; exit 1; fi
 
 ###
@@ -36,13 +36,13 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c "DROP TABLE IF EXISTS wikidisamb_count CAS
 if [ -d "$AUX_TABLES_DIR" ]; then
   for file in `find $AUX_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[30] FAILED!"; exit 1; fi
   done
 else
   unzip $AUX_TABLES -d $AUX_TABLES_DIR
   for file in `find $AUX_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[40] FAILED!"; exit 1; fi
   done
 fi
 
@@ -67,13 +67,13 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c "DROP TABLE IF EXISTS entity_feature_wikil
 if [ -d "$ENTITY_TABLES_DIR" ]; then
   for file in `find $ENTITY_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[50] FAILED!"; exit 1; fi
   done
 else
-  unzip $ENTITY_TABLES $ENTITY_TABLES_DIR
+  unzip $ENTITY_TABLES -d $ENTITY_TABLES_DIR
   for file in `find $ENTITY_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[60] FAILED!"; exit 1; fi
   done
 fi
 
@@ -84,10 +84,10 @@ if [ -d "$ENTITY_TABLES_WIKI_DIR" ]; then
     if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
   done
 else
-  unzip $ENTITY_TABLES_WIKI $ENTITY_TABLES_WIKI_DIR
+  unzip $ENTITY_TABLES_WIKI -d $ENTITY_TABLES_WIKI_DIR
   for file in `find $ENTITY_TABLES_WIKI_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[80] FAILED!"; exit 1; fi
   done
 fi
 
@@ -98,14 +98,14 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c """
                trim(word2) AS text
         FROM entity
     );"""
-if [ "$?" != "0" ]; then echo "[40] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[90] FAILED!"; exit 1; fi
 
 # load the NIL entity (for TAC KBP)
 psql -p $PGPORT -h $PGHOST $DBNAME -c """
     INSERT INTO canonical_entity(freebase_id, text) VALUES (
       'NIL0000', 'NIL0000'
     );"""
-if [ "$?" != "0" ]; then echo "[50] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[100] FAILED!"; exit 1; fi
 
 # load the entity types
 psql -p $PGPORT -h $PGHOST $DBNAME -c """
@@ -120,7 +120,7 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c """
             LEFT JOIN canonical_entity ON
               trim(entity.eid1) = canonical_entity.freebase_id
     );"""
-if [ "$?" != "0" ]; then echo "[60] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[110] FAILED!"; exit 1; fi
 
 
 ### Load the mention-related tables
@@ -132,37 +132,36 @@ psql -p $PGPORT -h $PGHOST $DBNAME -c "DROP TABLE IF EXISTS mention_feature_type
 if [ -d "$MENTION_TABLES_DIR" ]; then
   for file in `find $MENTION_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[120] FAILED!"; exit 1; fi
   done
 else
-  unzip $MENTION_TABLES
+  unzip $MENTION_TABLES -d $MENTION_TABLES_DIR
   for file in `find $MENTION_TABLES_DIR -name "*.sql"`; do 
     psql -p $PGPORT -h $PGHOST $DBNAME < $file
-    if [ "$?" != "0" ]; then echo "[70] FAILED!"; exit 1; fi
+    if [ "$?" != "0" ]; then echo "[130] FAILED!"; exit 1; fi
   done
 fi
 
 # construct the entity mention table
 psql -p $PGPORT -h $PGHOST $DBNAME -c """
-    INSERT INTO mention(doc_id, mid, sentence_id, text, query_id, is_correct) (
+    INSERT INTO entity_mention(doc_id, mid, sentence_id, text, query_id) (
         SELECT trim(replace(replace(mention.docid3, 'DOC_', ''), '.sgm', '')) AS doc_id,
                trim(mention.mid1) AS mid,
                trim(mention.sentid2) AS sentence_id,
                trim(mention.word4) AS text,
-               trim(asquery.qid2) AS query_id,
-               TRUE AS is_correct
+               trim(asquery.qid2) AS query_id
         FROM mention LEFT JOIN asquery ON
                asquery.mid1 = mention.mid1
     );"""
-if [ "$?" != "0" ]; then echo "[80] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[140] FAILED!"; exit 1; fi
 
 
 ### TAC KBP-specific stuff
 
 # populate entity id -> freebase id mapping
 psql -p $PGPORT -h $PGHOST $DBNAME -c "COPY eid_to_fid(entity_id, freebase_id) FROM STDIN CSV;" < $EID_TO_FID_FILE
-if [ "$?" != "0" ]; then echo "[100] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[150] FAILED!"; exit 1; fi
 
 # use this to get the query id for a given mention (identified by doc_id and text)
 psql -p $PGPORT -h $PGHOST $DBNAME -c "COPY el_kbp_eval_query(query_id, doc_id, text) FROM STDIN DELIMITER E'\t';" < $EL_KBP_EVAL_QUERY
-if [ "$?" != "0" ]; then echo "[110] FAILED!"; exit 1; fi
+if [ "$?" != "0" ]; then echo "[160] FAILED!"; exit 1; fi

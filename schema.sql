@@ -22,11 +22,11 @@ CREATE TABLE canonical_entity_type (
 );
 
 ----
--- MENTIONS
+-- MENTIONS FOR ENTITIES
 ----
 
-DROP TABLE IF EXISTS mention CASCADE;
-CREATE TABLE mention (
+DROP TABLE IF EXISTS entity_mention CASCADE;
+CREATE TABLE entity_mention (
   id bigserial primary key,
   mid text not null, 
   doc_id text not null,
@@ -47,7 +47,7 @@ CREATE TABLE mention (
 DROP TABLE IF EXISTS mention_feature_text_abbreviation CASCADE;
 CREATE TABLE mention_feature_text_abbreviation (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE mention_feature_text_abbreviation (
 DROP TABLE IF EXISTS mention_feature_text_lc CASCADE;
 CREATE TABLE mention_feature_text_lc (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -63,7 +63,7 @@ CREATE TABLE mention_feature_text_lc (
 DROP TABLE IF EXISTS mention_feature_text_alphanumeric CASCADE;
 CREATE TABLE mention_feature_text_alphanumeric (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE mention_feature_text_alphanumeric (
 DROP TABLE IF EXISTS mention_feature_text_alphanumeric_lc CASCADE;
 CREATE TABLE mention_feature_text_alphanumeric_lc (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -79,7 +79,7 @@ CREATE TABLE mention_feature_text_alphanumeric_lc (
 DROP TABLE IF EXISTS mention_feature_text_ngram1 CASCADE;
 CREATE TABLE mention_feature_text_ngram1 (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE mention_feature_text_ngram1 (
 DROP TABLE IF EXISTS mention_feature_text_num_words CASCADE;
 CREATE TABLE mention_feature_text_num_words (
   id bigserial primary key,
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   value text not null
 );
 
@@ -100,9 +100,10 @@ DROP TABLE IF EXISTS el_candidate_link CASCADE;
 CREATE TABLE el_candidate_link (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
+
 
 ----
 -- ENTITY LINKING FEATURES
@@ -113,7 +114,7 @@ DROP TABLE IF EXISTS el_everything_nil CASCADE;
 CREATE TABLE el_everything_nil (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 
@@ -122,7 +123,7 @@ DROP TABLE IF EXISTS el_exact_str_match CASCADE;
 CREATE TABLE el_exact_str_match (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 
@@ -131,7 +132,7 @@ DROP TABLE IF EXISTS el_wiki_link CASCADE;
 CREATE TABLE el_wiki_link (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 
@@ -140,7 +141,7 @@ DROP TABLE IF EXISTS el_wiki_redirect CASCADE;
 CREATE TABLE el_wiki_redirect (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 
@@ -149,7 +150,7 @@ DROP TABLE IF EXISTS el_top_bing_result CASCADE;
 CREATE TABLE el_top_bing_result (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 
@@ -158,7 +159,7 @@ DROP TABLE IF EXISTS el_bing_result CASCADE;
 CREATE TABLE el_bing_result (
   id bigserial primary key,
   entity_id bigint not null references canonical_entity(id),
-  mention_id bigint not null references mention(id),
+  mention_id bigint not null references entity_mention(id),
   is_correct boolean
 );
 

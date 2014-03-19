@@ -11,6 +11,5 @@ for line in fileinput.input():
 
 	print json.dumps({
 		"entity_id" : int(eid),
-		"mention_id" : int(mid),
-		"is_correct" : None
+		"mention_id" : int(mid)
 	})

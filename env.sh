@@ -7,16 +7,17 @@ export DEEPDIVE_HOME=`cd ../..; pwd`
 
 # Machine Configuration
 export MEMORY="64g"
-export PARALLELISM=15
+export PARALLELISM=20
 
 # SBT Options
 export SBT_OPTS="-Xmx$MEMORY"
 
 # Database Configuration
-export PGPORT=5433
-export PGHOST=madmax4
+export PGPORT=5432
+export PGHOST=rocky
 export DBNAME="deepdive_kbp"
-export PGUSER=${PGUSER:-`whoami`}
+#export PGUSER=${PGUSER:-`whoami`}
+export PGUSER=czhang
 export PGPASSWORD=${PGPASSWORD:-}
 
 # Data files
